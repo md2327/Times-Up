@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Countdown Timer</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Countdown Timer</h1>
+      <div class="input-section">
+        <label for="minutes"> Set Time: </label>
+        <input type="number" class="hours" placeholder="Enter hours" />
+        <input type="number" class="minutes" placeholder="Enter minutes" />
+        <input type="number" class="seconds" placeholder="Enter seconds" />
+      </div>
+      <div class="button">
+        <button id="start">Start</button>
+        <button id="pause">Pause</button>
+        <button id="reset">Reset</button>
+      </div>
+      <div id="countdown">
+        <p>00:00:00</p>
+      </div>
+    </div>
+    <style>
+      body {
+        font-family: "Courier New", Courier, monospace;
+        background-color: cadetblue;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        text-align: center;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+      .input-section {
+        margin-bottom: 15px;
+      }
+      label {
+        font-size: 1rem;
+      }
+      input {
+        width: 100px;
+        padding: 5px;
+        font-size: 1rem;
+        margin-left: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .button button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        margin: 10px;
+        color: #333;
+        background-color: aliceblue;
+        cursor: pointer;
+      }
+      .button button:hover {
+        background-color: darkgray;
+      }
+      #countdown {
+        font-size: 2rem;
+        margin-top: 20px;
+        font-weight: bold;
+      }
+    </style>
+    <script>
+      // select elements
+      const hoursInput = document.querySelector(".hours");
+      const minutesInput = document.querySelector(".minutes");
+      const secondsInput = document.querySelector(".seconds");
+      const startButton = document.querySelector("#start"); // use # bc id="start" not class="start"
+      const pauseButton = document.querySelector("#pause");
+      const resetButton = document.querySelector("#reset");
+      const countdownDisplay = document.querySelector("#countdown p");
+
+      let audio = new Audio("audio.mp3"); // create audio variable with source file
+      let countdownInterval; // store interval id
+      let totalTime = 0;
+      let isPaused = false; // timer is running
+
+      // start or resume timer
+      startButton.addEventListener("click", () => {
+        // if not paused, timer depends on input
+        if (!isPaused) {
+          totalTime =
+            (parseInt(hoursInput.value) || 0) * 3600 +
+            (parseInt(minutesInput.value) || 0) * 60 +
+            (parseInt(secondsInput.value) || 0);
+          if (totalTime <= 0) {
+            alert("Please enter a valid number");
+            return;
+          }
+        }
+        isPaused = false; // if timer is paused(true), then this will resume timer
+
+        // update countdown every second
+        countdownInterval = setInterval(() => {
+          const hrs = Math.floor(totalTime / 3600);
+          const mins = Math.floor((totalTime % 3600) / 60);
+          const secs = totalTime % 60;
+
+          // display the time in mm:ss format
+          countdownDisplay.textContent = `${String(hrs).padStart(
+            2,
+            "0"
+          )}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+          totalTime--;
+
+          // stops timer when totalTime is below 0
+          if (totalTime < 0) {
+            clearInterval(countdownInterval);
+            countdownDisplay.textContent = "Time's Up!";
+            audio.play(); // plays audio after timer goes off
+          }
+        }, 850); // keeps timer at a normal pace
+      });
+
+      // pauses timer
+      pauseButton.addEventListener("click", () => {
+        clearInterval(countdownInterval);
+        isPaused = true;
+      });
+
+      // resets timer
+      resetButton.addEventListener("click", () => {
+        clearInterval(countdownInterval); // stops timer
+        countdownDisplay.textContent = "00:00:00"; // reset display
+        hoursInput.value = ""; // clears input field
+        minutesInput.value = ""; // clears input field
+        secondsInput.value = ""; // clears input field
+        audio.pause();
+      });
+    </script>
+  </body>
+</html>
