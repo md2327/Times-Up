@@ -20,5 +20,4 @@ This project is intended for those wanting to time their study sessions. Simply 
 
 ## Demo
 
-[times-up.onrender.com
-](https://times-up.onrender.com)
+https://md2327.github.io/Times-Up/
